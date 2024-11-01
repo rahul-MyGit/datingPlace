@@ -76,6 +76,8 @@ export const useAuthStore = create<AuthStore>((set) => ({
             toast.success
         } catch (error : any) {
             toast.error(error.response.data.message || "Something went wrong")
+        } finally {
+            set({loading: false})
         }
     }
 }))
