@@ -78,7 +78,7 @@ export const swipeRight = async (req: Request, res: Response) => {
 
 export const getMatches = async (req: Request, res: Response) => {
     try {
-        const user = await User.findById(req.user.id).populate('matches', 'name image')
+        const user = await User.findById(req.user._id).populate('matches', 'name image')
 
         res.status(200).json({
             success: true,
@@ -97,7 +97,7 @@ export const getMatches = async (req: Request, res: Response) => {
 
 export const getUserProfiles = async (req: Request, res: Response) => {
     try {
-        const currentUser = await User.findById(req.user.id);
+        const currentUser = await User.findById(req.user._id);
         // Not Show -> currentUser, leftSwipt, rightSwipte, alreadyMatches, preference diffe
 
         const users = await User.find({

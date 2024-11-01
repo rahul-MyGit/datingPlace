@@ -30,4 +30,26 @@ export const sendMessage = async (req: Request, res: Response) => {
 
 export const getConversation = async (req: Request, res: Response) => {
     
+    const {userId} = req.params;
+
+    try {
+        const messages = await Message.find({
+            $or : [
+                {sender: req.user._id, receiver: userId},
+                {sender: userId, receiver: req.user._id}
+            ]
+        }).sort('createdAt');
+
+        res.status(200).json({
+            success: true,
+            messages
+        });
+        return;
+    } catch (error) {
+        console.log('Error in getting covo', error);
+        res.status(400).json({
+            success: false,
+            message: "Internal server error"
+        });
+    }
 }

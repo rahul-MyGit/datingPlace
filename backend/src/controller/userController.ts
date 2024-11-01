@@ -24,7 +24,7 @@ export const updateProfile = async (req: Request, res : Response) => {
             }
         }
 
-        const updatedUser = await User.findByIdAndUpdate(req.user.id, updatedData, {new: true});
+        const updatedUser = await User.findByIdAndUpdate(req.user._id, updatedData, {new: true});
 
         res.status(200).json({
             success: true,
