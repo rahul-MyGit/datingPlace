@@ -130,15 +130,17 @@ export const logout = async (req : Request, res: Response) => {
 
 export const getme = async (req: Request , res : Response) => {
     try {
-        res.status(200).json({
-            success: true,
+        res.send({
+            succes0s: true,
             user: req.user
         })
+        return;
     } catch (error) {
         console.log('Error in server');
-        res.status(200).json({
+        res.send({
             success: false,
             message: "Error in server"
         })
+        return;
     }
 }

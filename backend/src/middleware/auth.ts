@@ -33,9 +33,18 @@ export const protectRoute = async (req: Request, res: Response, next : NextFunct
 
     } catch (error) {
         console.log('Error while getting user details');
-        res.status(401).json({
-            success: false,
-            message: 'Error in protected route'
-        })
+        if( error instanceof jwt.JsonWebTokenError) {
+            res.status(401).json({
+                success: false,
+                message: 'Not authorized - Invalid token'
+            })
+            return;
+        } else{
+            res.status(500).json({
+                success: false,
+                message: 'Error in server'
+            })
+            return;
+        }
     }
 }
