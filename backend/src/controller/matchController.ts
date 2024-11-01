@@ -2,11 +2,78 @@ import { Request, Response } from "express";
 import User from "../model/User";
 
 export const swipeLeft = async (req: Request, res: Response) => {
+    try {
+        const {disLikeUserId} = req.params;
 
+        const currentUser = await User.findById(req?.user.id);
+
+        //TODO: recheck this 
+        if(!currentUser?.dislikes.includes(Object(disLikeUserId))){
+            currentUser?.dislikes.push(Object(disLikeUserId));
+            await currentUser?.save();
+        }
+
+        res.status(200).json({
+            success: true,
+            user: currentUser
+        });
+        return;
+    } catch (error) {
+        console.log('Error in swipe left', error);
+        res.status(400).json({
+            success: false,
+            message: 'Internal server error'
+        })
+        
+    }
 }
 
 export const swipeRight = async (req: Request, res: Response) => {
+    try {
+        const {likeUserId} = req.params;
+        const currentUser = await User.findById(req?.user.id);
 
+        const likedUser = await User.findById(Object(likeUserId));
+
+        if(!likedUser){
+            res.status(400).json({
+                success: true,
+                message: 'User not found'
+            });
+            return;
+        }
+
+        if(!currentUser?.likes.includes(Object(likeUserId))){
+            currentUser?.likes.push(Object(likeUserId));
+            await currentUser?.save();
+
+            if(likedUser?.likes.includes(currentUser?.id)){
+                currentUser?.matches.push(likedUser.id);
+                likedUser.matches.push(currentUser?.id)
+
+                Promise.all([
+                    await currentUser?.save(),
+                    await likedUser?.save()
+                ]);
+    
+                //TODO: Notify both user in realtime using websocket
+            }
+        }
+
+        res.status(200).json({
+            success: true,
+            user: currentUser
+        });
+        return;
+
+    } catch (error) {
+        console.log('Error in  swipeRight', error);
+        res.status(400).json({
+            success: false,
+            message: "Internal server Error"
+        })
+        
+    }
 }
 
 export const getMatches = async (req: Request, res: Response) => {
@@ -41,6 +108,7 @@ export const getUserProfiles = async (req: Request, res: Response) => {
                 {_id: {$nin: currentUser?.matches}},
                 {
                     //TODO:check types later
+                    //@ts-ignore
                     gender: currentUser?.genderPreference === 'both' ? { $in: ['male', 'female']} : currentUser?.genderPreference
                 },
                 {genderPreference: { $in: [currentUser?.gender, 'both']}}
