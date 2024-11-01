@@ -1,6 +1,6 @@
 //TODO: remember to install react-router-dom, react-hot-toast, axios, zustand
 
-import { Route, Routes } from "react-router-dom"
+import { Navigate, Route, Routes } from "react-router-dom"
 import HomePage from "./pages/HomePage"
 import AuthPage from "./pages/AuthPage"
 import ProfilePage from "./pages/ProfilePage"
@@ -12,11 +12,13 @@ import { Toaster } from "react-hot-toast"
 
 function App() {
 
-  const {checkAuth} = useAuthStore()
+  const {checkAuth, authUser, checkingAuth} = useAuthStore()
 
   useEffect(() => {
     checkAuth();
-  }, [checkAuth])
+  }, [checkAuth]);
+
+  if(checkingAuth) return null;
 
   return (
     <>
@@ -25,10 +27,10 @@ function App() {
     (to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">
 
       <Routes>
-        <Route path="/" element={<HomePage />}/>
-        <Route path="/auth" element={<AuthPage />}/>
-        <Route path="/profile" element={<ProfilePage />}/>
-        <Route path="/chat/:id" element={<ChatPage />}/>
+        <Route path="/" element={authUser ? <HomePage /> : <Navigate to={'/auth'} />}/>
+        <Route path="/auth" element={!authUser ? <AuthPage /> : <Navigate to={'/'}/>}/>
+        <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to={'/auth'} />}/>
+        <Route path="/chat/:id" element={authUser ? <ChatPage />  : <Navigate to={'/auth'} />}/>
       </Routes>
 
       <Toaster />
