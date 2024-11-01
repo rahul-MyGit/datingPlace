@@ -5,10 +5,19 @@ import HomePage from "./pages/HomePage"
 import AuthPage from "./pages/AuthPage"
 import ProfilePage from "./pages/ProfilePage"
 import ChatPage from "./pages/ChatPage"
-
+import { useEffect } from "react"
+import { useAuthStore } from "./store/useAuthStore"
+import { Toaster } from "react-hot-toast"
 
 
 function App() {
+
+  const {checkAuth} = useAuthStore()
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth])
+
   return (
     <>
     <div className="absolute insert-0 -z-10 h-full w-full bg-white bg-
@@ -21,6 +30,8 @@ function App() {
         <Route path="/profile" element={<ProfilePage />}/>
         <Route path="/chat/:id" element={<ChatPage />}/>
       </Routes>
+
+      <Toaster />
     </div>
 
     </>
