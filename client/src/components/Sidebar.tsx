@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MessageCircle, X } from 'lucide-react';
 import LoadingState from "./LoadingState";
 import NoMatchesFound from "./NoMatchesFound";
 import { Link } from "react-router-dom";
+import { useMatchStore } from "../store/useMatchStore";
 
 const Sidebar = () => {
 
@@ -10,8 +11,11 @@ const Sidebar = () => {
 
     const toggleSidebar = () => setIsOpen(!isOpen);
 
-    const loading = false;
-    const matches: any = [{ '_id': 1, 'name': "Rahul" }];
+    const {getMyMatches, matches,isLoadingMatches} = useMatchStore()
+
+    useEffect(() => {
+        getMyMatches();
+    }, [getMyMatches]);
 
     return (
         <>
@@ -33,7 +37,7 @@ const Sidebar = () => {
                     </div>
 
                     <div className="flex-grow overflow-y-auto p-4 z-10 realtive">
-                        {loading ? <LoadingState /> : matches.length === 0 ? <NoMatchesFound /> : (matches.map((match: any) => (
+                        {isLoadingMatches ? <LoadingState /> : matches.length === 0 ? <NoMatchesFound /> : (matches.map((match: any) => (
                             <Link key={match.id} to={`/chat/${match._id}`}>
                                 <div className='flex items-center mb-4 cursor-pointer hover:bg-pink-50 p-2 rounded-lg transition-colors duration-300'>
                                     <img
