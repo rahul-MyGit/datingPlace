@@ -4,6 +4,8 @@ import { useMatchStore } from "../store/useMatchStore";
 import { Header } from "../components/Header";
 import NoMoreProfiles from "../components/NoMoreProfiles";
 import LoadingUI from "../components/LoadingUI";
+import SwipeArea from "../components/SwipeArea";
+import SwipeFeedback from "../components/SwipeFeedback";
 
 const HomePage = () => {
 
@@ -24,8 +26,8 @@ const HomePage = () => {
                 <main className="flex-grow flex flex-col gap-10 justify-center items-center p-4 relative overflow-hidden">
                     {userProfiles.length > 0 && !isLoadingProfile && (
                         <>
-                        {/* swipe component */}
-                        User Found
+                            <SwipeArea />
+                            <SwipeFeedback />
                         </>
                     )}
 
