@@ -29,7 +29,9 @@ function App() {
       <Routes>
         <Route path="/" element={authUser ? <HomePage /> : <Navigate to={'/auth'} />}/>
         <Route path="/auth" element={!authUser ? <AuthPage /> : <Navigate to={'/'}/>}/>
-        <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to={'/auth'} />}/>
+        {/* <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to={'/auth'} />}/> */}
+        <Route path="/profile" element={<ProfilePage />}/>
+
         <Route path="/chat/:id" element={authUser ? <ChatPage />  : <Navigate to={'/auth'} />}/>
       </Routes>
 

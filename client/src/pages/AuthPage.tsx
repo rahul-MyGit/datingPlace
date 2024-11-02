@@ -9,7 +9,7 @@ const AuthPage = () => {
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-500 to-pink-500 p-4">
             <div className="w-full max-w-md">
                 <h2 className="text-center text-3xl font-extrabold text-white mb-8">
-                    {isLogin ? 'Sign in to swipe' : 'Create a Swipe account'}
+                    {isLogin ? 'Sign in to datingPlace' : 'Create a datingPlace account'}
                 </h2>
 
                 <div className="bg-white shadow-xl rounded-lg p-8">
@@ -17,7 +17,7 @@ const AuthPage = () => {
 
                     <div className="mt-8 text-center">
                         <p className="text-sm text-gray-600">
-                            {isLogin ? 'New to Swipe?' : 'Already have an account?'}
+                            {isLogin ? 'New to datingPlace?' : 'Already have an account?'}
                         </p>
 
                         <button 
