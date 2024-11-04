@@ -1,21 +1,21 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
-
-// type Match = {
-//     id: string,
-// }
+import { getSocket } from "../socket/socket.client";
+import { Socket } from "socket.io-client";
 
 type MatchStore = {
     isLoadingMatches: boolean,
     isLoadingProfile: boolean,
     swipeFeedback: any,
-    matches: [],
+    matches: any[],
     userProfiles: [],
     getMyMatches: () => void,
     getUserProfiles: () => void,
     swipeLeft: (user: any) => void,
-    swipeRight: (user: any) => void
+    swipeRight: (user: any) => void,
+    subscribeToNewMatches: () => void,
+    unsubscribeNewMatchs: () => void
 }
 
 export const useMatchStore = create<MatchStore>((set) => ({
@@ -51,31 +51,54 @@ export const useMatchStore = create<MatchStore>((set) => ({
         }
     },
 
-    swipeLeft: async (user:any) => {
+    swipeLeft: async (user: any) => {
         try {
-            set({ swipeFeedback: 'passed'});
+            set({ swipeFeedback: 'passed' });
             await axiosInstance.post('/matches/swipe-left/' + user._id)
         } catch (error) {
             console.log(error);
             toast.error("Failed to swipe left");
-        }finally{
-            setTimeout(() => set({swipeFeedback: null}) , 100);
+        } finally {
+            setTimeout(() => set({ swipeFeedback: null }), 100);
         }
     },
 
     swipeRight: async (user: any) => {
         try {
-            set({swipeFeedback: "liked"});
-            await  axiosInstance.post('/matches/swipe-right/' + user._id)
+            set({ swipeFeedback: "liked" });
+            await axiosInstance.post('/matches/swipe-right/' + user._id)
         } catch (error) {
             console.log(error)
             toast.error('failed to swipe right')
         } finally {
             setTimeout(() => {
-                set({swipeFeedback: null})
+                set({ swipeFeedback: null })
             }, 100);
         }
-    }
+    },
 
-    
-}))
+    subscribeToNewMatches: () => {
+        try {
+            const socket = getSocket() as Socket;
+
+            socket.on('newMatch', (newMatch: any) => {
+                set((data) => ({
+                    matches: [...data.matches, newMatch]
+                }))
+                toast.success('You got a new Match');
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    },
+
+
+    unsubscribeNewMatchs: () => {
+        try {
+            const socket = getSocket() as Socket;
+            socket.off('newMatch')
+        } catch (error) { 
+            console.error(error)
+        }
+    }
+}));
