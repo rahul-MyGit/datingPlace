@@ -6,14 +6,25 @@ import NoMoreProfiles from "../components/NoMoreProfiles";
 import LoadingUI from "../components/LoadingUI";
 import SwipeArea from "../components/SwipeArea";
 import SwipeFeedback from "../components/SwipeFeedback";
+import { useAuthStore } from "../store/useAuthStore";
 
 const HomePage = () => {
 
-    const {isLoadingProfile, getUserProfiles, userProfiles} = useMatchStore();
+    const {isLoadingProfile, getUserProfiles, userProfiles, subscribeToNewMatches, unsubscribeNewMatchs} = useMatchStore();
+
+    const {authUser} = useAuthStore();
 
     useEffect(() => {
         getUserProfiles();
     }, [getUserProfiles]);
+
+    useEffect(() => {
+        authUser && subscribeToNewMatches()
+
+        return () => {
+            unsubscribeNewMatchs()
+        }
+    }, [subscribeToNewMatches, unsubscribeNewMatchs, authUser]);
 
     console.log('users profile is : ', userProfiles);
     

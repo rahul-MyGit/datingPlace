@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import User from "../model/User";
+import { getConnectedUsers, getIO } from "../socket/socket.server";
+import { Server } from "socket.io";
 
 export const swipeLeft = async (req: Request, res: Response) => {
     try {
@@ -55,8 +57,27 @@ export const swipeRight = async (req: Request, res: Response) => {
                     await currentUser?.save(),
                     await likedUser?.save()
                 ]);
-    
-                //TODO: Notify both user in realtime using websocket
+
+                const connectedUsers = getConnectedUsers();
+
+                const io = getIO() as Server;
+                const likedUserSocketId = connectedUsers.get(likeUserId)
+                if(likedUserSocketId) {
+                    io.to(likedUserSocketId).emit('newMatch', {
+                        _id: currentUser?._id,
+                        name: currentUser?.name,
+                        Image: currentUser?.image
+                    })
+                }
+
+                const currentSocketId = connectedUsers.get(currentUser?._id.toString());
+                if(currentSocketId){
+                    io.to(currentSocketId).emit('newMatch', {
+                        _id: likedUser._id,
+                        name: likedUser.name,
+                        image: likedUser.image
+                    })
+                }
             }
         }
 
