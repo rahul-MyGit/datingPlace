@@ -9,15 +9,19 @@ import toast from "react-hot-toast";
 type MatchStore = {
     isLoadingMatches: boolean,
     isLoadingProfile: boolean,
+    swipeFeedback: any,
     matches: [],
     userProfiles: [],
     getMyMatches: () => void,
-    getUserProfiles: () => void
+    getUserProfiles: () => void,
+    swipeLeft: (user: any) => void,
+    swipeRight: (user: any) => void
 }
 
 export const useMatchStore = create<MatchStore>((set) => ({
     isLoadingMatches: false,
     isLoadingProfile: false,
+    swipeFeedback: null,
     matches: [],
     userProfiles: [],
 
@@ -45,6 +49,33 @@ export const useMatchStore = create<MatchStore>((set) => ({
         } finally {
             set({ isLoadingProfile: false });
         }
+    },
+
+    swipeLeft: async (user:any) => {
+        try {
+            set({ swipeFeedback: 'passed'});
+            await axiosInstance.post('/matches/swipe-left/' + user._id)
+        } catch (error) {
+            console.log(error);
+            toast.error("Failed to swipe left");
+        }finally{
+            setTimeout(() => set({swipeFeedback: null}) , 100);
+        }
+    },
+
+    swipeRight: async (user: any) => {
+        try {
+            set({swipeFeedback: "liked"});
+            await  axiosInstance.post('/matches/swipe-right/' + user._id)
+        } catch (error) {
+            console.log(error)
+            toast.error('failed to swipe right')
+        } finally {
+            setTimeout(() => {
+                set({swipeFeedback: null})
+            }, 100);
+        }
     }
 
+    
 }))
