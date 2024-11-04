@@ -3,8 +3,12 @@ import { useMatchStore } from "../store/useMatchStore";
 
 
 const SwipeArea = () => {
+    const { userProfiles, swipeRight, swipeLeft} = useMatchStore();
 
-    const { userProfiles } = useMatchStore();
+    const  handleSwipe = (dir: any, user: any) => {
+        if(dir === 'right') swipeRight(user);
+        else if(dir === 'left') swipeLeft(user);
+    }
 
     return (
         <>
@@ -13,7 +17,7 @@ const SwipeArea = () => {
                     <TinderCard
                         className="absolute shadow-none"
                         key={user._id}
-                        onSwipe={(dir) => console.log(dir)}
+                        onSwipe={(dir) => handleSwipe(dir, user)}
                         swipeRequirementType="position"
                         swipeThreshold={100}
                         preventSwipe={['up', 'down']}
