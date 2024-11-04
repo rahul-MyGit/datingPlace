@@ -8,10 +8,10 @@ export const initializeSocket = (userId : string) => {
     if(socket){
         socket.disconnect();
     }
-
     socket = io(SECURE_URL,{
         auth: {userId}
     })
+    
 }
 
 export const getSocket = () => {

@@ -1,5 +1,4 @@
 import { Server } from "socket.io";
-import * as http from "http";
 
 declare module "socket.io" {
     interface Socket {
@@ -11,7 +10,7 @@ let io : Server | undefined;
 
 const connectedUser = new Map();
 
-export const initializeSocket = (httpServer: http.Server) => {
+export const initializeSocket = (httpServer: any) => {
 
     io = new Server(httpServer, {
         cors: {
@@ -31,7 +30,9 @@ export const initializeSocket = (httpServer: http.Server) => {
     })
 
 
-    io.on('connections', (socket) => {
+    io.on('connection', (socket) => {
+
+        console.log('first');
         console.log(`User is connected to socket Id of :  ${socket.id}`);
         connectedUser.set(socket.userId, socket.id);
 

@@ -36,6 +36,6 @@ app.use('/api/matches', matchRoutes);
 app.use('/api/messages', messageRoutes);
 
 httpServer.listen(PORT, ()=> {
-    console.log(`Server as started at port ${PORT}`);
+    console.log(`Server as started at ports ${PORT}`);
     connectToDB();
 });
