@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import Message from "../model/Message";
+import { getConnectedUsers, getIO } from "../socket/socket.server";
+import { Server } from "socket.io";
 
 export const sendMessage = async (req: Request, res: Response) => {
     
@@ -12,7 +14,16 @@ export const sendMessage = async (req: Request, res: Response) => {
             content
         })
 
-        //TODO: send message usin ws
+        const io = getIO() as Server;
+        const connectedUsers = getConnectedUsers();
+        const receiverUserSocketId = connectedUsers.get(receiverId);
+
+        if(receiverUserSocketId) {
+            io.to(receiverUserSocketId).emit('newMessage', {
+                message: newMessage,
+            });
+        }
+
         res.status(200).json({
             success: true,
             message: newMessage
