@@ -7,7 +7,9 @@ type messageStore = {
     messages: any[],
     loading: boolean,
     sendMessage: (receiverId: string, content: string) => void,
-    getMessage: (userId: string) => void
+    getMessage: (userId: string) => void,
+    subscribeMessages: () => void,
+    unsubscribeFromMessages: () => void
 }
 
 type Resdata = {
